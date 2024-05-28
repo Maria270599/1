@@ -1,0 +1,13 @@
+SELECT name AS name_category,
+COUNT (c.category_id) AS total_films
+FROM category AS c
+RIGHT JOIN film_category AS fc ON c.category_id=fc.category_id
+RIGHT JOIN film_actor AS fa ON fa.film_id=fc.film_id
+RIGHT JOIN (SELECT fa.actor_id
+FROM film_actor AS fa
+LEFT JOIN movie AS m ON fa.film_id=m.film_id
+WHERE m.release_year >2013
+GROUP BY fa.actor_id
+HAVING COUNT(m.film_id)>7) AS actors ON actors.actor_id=fa.actor_id
+GROUP BY name_category
+ORDER BY total_films DESC, name_category;
